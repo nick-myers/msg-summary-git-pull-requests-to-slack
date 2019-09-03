@@ -19,7 +19,7 @@ let { graphql } = require("@octokit/graphql");
 const { WebClient } = require('@slack/web-api');
 const web = new WebClient(oauthToken);
 const graphqlQuery = {
-    query: `query { organization(login: ${organisation}) {
+    query: `query { organization(login: "${organisation}") {
               repositories(first: 20, orderBy: {field: PUSHED_AT, direction: DESC}) {
               nodes {
                   name
