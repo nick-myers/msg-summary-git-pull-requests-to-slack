@@ -25,5 +25,9 @@
     "moment": "^2.24.0",
     "moment-business-days": "^1.1.3",
     "typescript": "^3.6.2"
+  },
+  "dependencies": {
+    "cisco-vpn": "^1.0.2",
+    "ps-node": "^0.1.6"
   }
 }

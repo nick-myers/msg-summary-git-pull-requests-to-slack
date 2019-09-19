@@ -17,6 +17,8 @@ This script is used to retrieve open pull requests for an organisation from the 
   * `npm install moment`
   * `npm install moment-business-days`
   * `npm install @slack/web-api`
+  * `npm install cisco-vpn`
+  * `npm install ps-node`
 3. Clone this repository to a directory of your choosing
 4. Initialise typescript in the directory you cloned the repo into
   * `npm run tsc -- --init`
@@ -28,10 +30,14 @@ The content of the `/src/config.ts` should be as follows:
 
 ```javascript
 export const gitUrl: string = 'https://www.github.com/api'; // Enterprise users should replace this with their own URL
-export const pass: string = 'QUSV065T5P88NTQ9XHMA6CA184CPX2EUM4OR0BYF'; // Github personal access token - this is not a real token
-export const oauthToken: string = 'xoxp-28841330430-452313974416-300102328521-k8eniubfprdxjp3m4fv65z7j1oc57lfy'; // Slack application oauth token - will start with xoxp- this is not a real token
-export const channel: string = 'OJQY8BFJJ'; // Slack channel ID - this is not a real channel id
+export const pass: string = 'QUSV065T5P88NTQ9XHMA6CA184CPX2EUM4OR0BYF'; // Github personal access token - example is not a real token
+export const oauthToken: string = 'xoxp-28841330430-452313974416-300102328521-k8eniubfprdxjp3m4fv65z7j1oc57lfy'; // Slack application oauth token - will start with xoxp- example is not a real token
+export const channel: string = 'OJQY8BFJJ'; // Slack channel ID - example is not a real channel id
 export const organisation: string = 'MyOrganisation'; // Github organisation name 
+export const vpnhost: string = 'remote.organisation.com';
+export const vpnuser: string = 'your username';
+export const vpnpass: string = 'your password'
+export const vpnexe: string = 'C:\\Program Files (x86)\\Cisco\\Cisco AnyConnect Secure Mobility Client\\vpncli.exe';
 ```
 
 # Transpile

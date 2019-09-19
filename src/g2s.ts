@@ -10,13 +10,21 @@
  * npm install --save-dev moment
  * npm install --save-dev moment-business-days
  * npm install --save-dev @slack/web-api
+ * npm install ps-node
  * 
  */
 
-import { gitUrl, pass, oauthToken, channel, organisation } from './config';
+import { gitUrl, pass, oauthToken, channel, organisation, vpnhost, vpnuser, vpnpass, vpnexe } from './config';
+const ps = require('ps-node');
 const moment = require('moment-business-days');
 let { graphql } = require("@octokit/graphql");
 const { WebClient } = require('@slack/web-api');
+const vpn = require('cisco-vpn')({
+    server: vpnhost,
+    username: vpnuser,
+    password: vpnpass,
+    exe: vpnexe
+})
 const web = new WebClient(oauthToken);
 const graphqlQuery = {
     query: `query { organization(login: "${organisation}") {
@@ -64,6 +72,11 @@ graphql = graphql.defaults({
       authorization: `token ${pass}`
     }
 });
+async function sleep(ms: number){
+    return new Promise(resolve=>{
+        setTimeout(resolve,ms)
+    })
+}
 
 async function slack(message: string) {
     await web.chat.postMessage({
@@ -73,6 +86,8 @@ async function slack(message: string) {
 }
 async function query() {
     try {
+        console.log(`Waiting 15 seconds before attempting to query to allow VPN connection to complete`);
+        await sleep(15000)
         const result = await graphql(graphqlQuery);
         const nodes = result.organization.repositories.nodes;
         let text: string = '';
@@ -89,11 +104,67 @@ async function query() {
                     details = details + `>${numWorkingDays} days old: _${pullRequestNode.title}_ - ${pullRequestNode.url}\n`;
                 })
                 slack(text.concat(details));
-            }
+            };
         });
     } catch (error) {
         console.log('Request failed:', error.request);
         console.log(error.message);
     }
 }
-query();
+
+async function killvpnuiclient() {
+    console.log(`Attempting to kill vpn client`);
+    await ps.lookup({
+        command: 'vpnui'
+    }, async function(err: any, resultList: any ) {
+    if (err) {
+        throw new Error( err );
+    }
+
+    await resultList.forEach(async function( process: any ){
+        if( process ){
+            console.log('Killing: PID: %s, COMMAND: %s, ARGUMENTS: %s', process.pid, process.command, process.arguments);
+            await ps.kill( process.pid, 'SIGKILL', function( err: any ) {
+                if (err) {
+                    throw new Error( err );
+                }
+                else {
+                    console.log( 'Process %s has been killed without a clean-up!', process.pid );
+                }
+            });
+        }
+    });
+});
+}
+async function vpnconnect() {
+    try {
+        console.log(`Attempting to connect to VPN`);
+        await vpn.connect().then(() => console.log('Connected to VPN!'));
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+async function vpndisconnect() {
+    try {
+        console.log(`Attempting to disconnect from VPN`);
+        await vpn.disconnect().then(() => console.log('VPN disconnected!'))
+    } catch (error) {
+        console.log(error);
+    }
+}
+
+async function run() {
+    const killed = await killvpnuiclient();
+    if (killed != undefined) {
+        console.log(`Could not validate VPN client has been killed. It may not be running.`)
+    } else if (killed == undefined) {
+        console.log(`Looks like the VPN client is not running.`)
+    }
+    await vpnconnect();
+    await query();
+    await vpndisconnect();
+    await killvpnuiclient();
+}
+
+run();
