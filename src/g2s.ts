@@ -81,7 +81,7 @@ async function sleep(ms: number){
 async function slack(message: string) {
     await web.chat.postMessage({
         channel: channel,
-        text: '@here' + message
+        text: message
     });
 }
 async function query() {
