@@ -77,7 +77,6 @@ async function sleep(ms: number){
         setTimeout(resolve,ms)
     })
 }
-
 async function slack(message: string) {
     await web.chat.postMessage({
         channel: channel,
@@ -109,7 +108,6 @@ async function query() {
             };
         });
         if(prExists === false) {
-            console.log(`There are no pull requests, wow!`);
             const message = `Look, it's not you, it's me.  This has never happened before to me.  I've searched all the repositories and cannot find any open pull requests`;
             slack(message);
         }
@@ -118,9 +116,7 @@ async function query() {
         console.log(error.message);
     }
 }
-
 async function killvpnuiclient() {
-    console.log(`Attempting to kill vpn client`);
     await ps.lookup({
         command: 'vpnui'
     }, async function(err: any, resultList: any ) {
@@ -145,21 +141,11 @@ async function killvpnuiclient() {
 }
 async function vpnconnect() {
     try {
-        console.log(`Attempting to connect to VPN`);
         await vpn.connect().then(() => console.log('Connected to VPN!'));
     } catch (error) {
         console.log(error);
     }
 };
-
-async function vpndisconnect() {
-    try {
-        console.log(`Attempting to disconnect from VPN`);
-        await vpn.disconnect().then(() => console.log('VPN disconnected!'))
-    } catch (error) {
-        console.log(error);
-    }
-}
 
 async function run() {
     const killed = await killvpnuiclient();
@@ -170,8 +156,6 @@ async function run() {
     }
     await vpnconnect();
     await query();
-    await vpndisconnect();
-    await killvpnuiclient();
 }
 
 run();
