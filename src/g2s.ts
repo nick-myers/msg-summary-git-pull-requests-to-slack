@@ -91,6 +91,7 @@ async function query() {
         const result = await graphql(graphqlQuery);
         const nodes = result.organization.repositories.nodes;
         let text: string = '';
+        let prExists = false;
         nodes.forEach(async(node: any)  =>  {
             const prCount = node.pullRequests.nodes.length;
             if (prCount !== 0) {
@@ -103,9 +104,15 @@ async function query() {
                     const numWorkingDays = moment(createdDate).businessDiff(moment(nowDate));
                     details = details + `>${numWorkingDays} days old: _${pullRequestNode.title}_ - ${pullRequestNode.url}\n`;
                 })
+                prExists = true;
                 slack(text.concat(details));
             };
         });
+        if(prExists === false) {
+            console.log(`There are no pull requests, wow!`);
+            const message = `Look, it's not you, it's me.  This has never happened before to me.  I've searched all the repositories and cannot find any open pull requests`;
+            slack(message);
+        }
     } catch (error) {
         console.log('Request failed:', error.request);
         console.log(error.message);
@@ -132,9 +139,9 @@ async function killvpnuiclient() {
                     console.log( 'Process %s has been killed without a clean-up!', process.pid );
                 }
             });
-        }
+            }
+        });
     });
-});
 }
 async function vpnconnect() {
     try {
