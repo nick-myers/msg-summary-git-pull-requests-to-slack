@@ -43,7 +43,7 @@ export const vpnexe: string = 'C:\\Program Files (x86)\\Cisco\\Cisco AnyConnect 
 
 # Transpile
 
-1. Run `tsc` // this transpiles the TypeScript code (.ts) into JavaScript (.js)
+1. Run `tsc` (this transpiles the TypeScript code (.ts) into JavaScript (.js) )
 2. Confirm that `/build/config.js` and `/build/g2s.js` have been created
 
 # Execute
