@@ -11,7 +11,7 @@ This script is used to retrieve open pull requests for an organisation from the 
 
 1. Install node.js - https://nodejs.org/
 2. Use the node package manager (npm) to install the following packages: 
-  * `npm install typescript`
+  * `npm install -g typescript`
   * `npm install @types/node`
   * `npm install @octokit/graphql`
   * `npm install moment`
@@ -30,7 +30,7 @@ The content of the `/src/config.ts` should be as follows:
 
 ```javascript
 export const gitUrl: string = 'https://www.github.com/api'; // Enterprise users should replace this with their own URL
-export const pass: string = 'QUSV065T5P88NTQ9XHMA6CA184CPX2EUM4OR0BYF'; // Github personal access token - example is not a real token
+export const pass: string = 'QUSV065T5P88NTQ9XHMA6CA184CPX2EUM4OR0BYF'; // Github personal access token - example is not a real token - select repo, gist and users scopes
 export const oauthToken: string = 'xoxp-28841330430-452313974416-300102328521-k8eniubfprdxjp3m4fv65z7j1oc57lfy'; // Slack application oauth token - will start with xoxp- example is not a real token
 export const channel: string = 'OJQY8BFJJ'; // Slack channel ID - example is not a real channel id
 export const organisation: string = 'MyOrganisation'; // Github organisation name 
@@ -42,11 +42,13 @@ export const vpnexe: string = 'C:\\Program Files (x86)\\Cisco\\Cisco AnyConnect 
 
 # Transpile
 
-1. Run `tsc` 
+1. Run `tsc` // this transpiles the TypeScript code (.ts) into JavaScript (.js)
+2. Confirm that `/build/config.js` and `/build/g2s.js` have been created
 
 # Execute
 
 1. Run `node ./build/g2s.js`
+2. Confirm that a message was pushed to Slack
 
 # Scheduling
 
