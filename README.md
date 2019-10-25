@@ -23,6 +23,7 @@ This script is used to retrieve open pull requests for an organisation from the 
 4. Initialise typescript in the directory you cloned the repo into
   * `npm run tsc -- --init`
 5. Create `/src/config.ts` and populate it as described below
+6. Create a personal access token as per https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line
 
 # Configuration
 
